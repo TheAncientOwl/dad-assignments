@@ -5,17 +5,12 @@
 */
 
 #include <iostream>
-#include <thread>
 #include <vector>
+#include <thread>
 
 #include "../utils/utils.h"
 
 using array = std::vector<float>;
-
-void addArrays(const array& arr1, const array& arr2, array& arrOut, int startIdx, int stopIdx) {
-  for (int i = startIdx; i <= stopIdx; i++)
-    arrOut[i] = arr1[i] + arr2[i];
-}
 
 const int ARRAY_SIZE = 10000000;
 const int THREADS_COUNT = 8;
@@ -26,15 +21,24 @@ struct Arrays {
   array arr2;
   array arrOut;
 
-  Arrays() : arr1(ARRAY_SIZE, 2.2f), arr2(ARRAY_SIZE, 3.3f), arrOut(ARRAY_SIZE, 0.0f) {}
+  Arrays(std::size_t size, float value1, float value2)
+    : arr1(size, value1), arr2(size, value2), arrOut(size, 0.0f) {}
 };
 
+// ----------------------------------------------------------------------------
+void addArrays(const array& arr1, const array& arr2, array& arrOut, int startIdx, int stopIdx) {
+  for (int i = startIdx; i <= stopIdx; i++)
+    arrOut[i] = arr1[i] + arr2[i];
+}
+
+// ----------------------------------------------------------------------------
 void singleThreadAddArrays(void* arguments) {
   Arrays* arrays = (Arrays*) arguments;
 
   addArrays(arrays->arr1, arrays->arr2, arrays->arrOut, 0, ARRAY_SIZE - 1);
 }
 
+// ----------------------------------------------------------------------------
 void multiThreadAddArrays(void* arguments) {
   Arrays* arrays = (Arrays*) arguments;
 
@@ -52,10 +56,11 @@ void multiThreadAddArrays(void* arguments) {
     thread.join();
 }
 
+// ----------------------------------------------------------------------------
 int main() {
   printf(ANSI_COLOR_YELLOW "> 3.3. Add arrays -> c++ std::thread. (%d elements, %d threads)\n", ARRAY_SIZE, THREADS_COUNT);
 
-  Arrays arrays;
+  Arrays arrays(ARRAY_SIZE, 2.2f, 3.3f);
 
   runTimer("one_thread", ANSI_COLOR_BLUE, singleThreadAddArrays, &arrays);
 
@@ -63,10 +68,7 @@ int main() {
 
   runTimer("multi_thread", ANSI_COLOR_GREEN, multiThreadAddArrays, &arrays);
 
-  std::cout << ANSI_COLOR_RED;
-  for (int i = 0; i < 10; i++)
-    std::cout << arrays.arrOut[i] << " | ";
-  std::cout << "...\n\n";
+  printResultArray(arrays.arrOut.data(), 10);
 
   return 0;
 }

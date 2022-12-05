@@ -6,13 +6,12 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 #include "sharedArrays.h"
-
 #include "../utils/utils.h"
 
 const int ARRAY_SIZE = 10000000;
@@ -25,17 +24,20 @@ struct Arrays {
   float* arrOut;
 };
 
+// ----------------------------------------------------------------------------
 void addArrays(struct Arrays* arrays, int startIdx, int stopIdx) {
   for (int i = startIdx; i <= stopIdx; i++)
     arrays->arrOut[i] = arrays->arr1[i] + arrays->arr2[i];
 }
 
+// ----------------------------------------------------------------------------
 void singleProcessAddArrays(void* arguments) {
   struct Arrays* arrays = arguments;
 
   addArrays(arrays, 0, ARRAY_SIZE - 1);
 }
 
+// ----------------------------------------------------------------------------
 void multiProcessAddArrays(void* arguments) {
   struct Arrays* arrays = arguments;
 
@@ -45,9 +47,8 @@ void multiProcessAddArrays(void* arguments) {
     int startIdx = it * CHUNK_SIZE;
     int stopIdx = (it + 1) * CHUNK_SIZE - 1;
 
-    pid_t pid = fork();
-
-    if (pid == 0) {
+    childPids[it] = fork();
+    if (childPids[it] == 0) {
       printf(ANSI_COLOR_RED "> Forked Child (PID: %d) ~ add(%d -> %d).\n" ANSI_COLOR_RESET, getpid(), startIdx, stopIdx);
 
       addArrays(arrays, startIdx, stopIdx);
@@ -56,8 +57,6 @@ void multiProcessAddArrays(void* arguments) {
 
       exit(EXIT_SUCCESS);
     }
-
-    childPids[it] = pid;
   }
 
   for (int it = 0; it < PROCESSES_COUNT; it++) {
@@ -67,6 +66,7 @@ void multiProcessAddArrays(void* arguments) {
   }
 }
 
+// ----------------------------------------------------------------------------
 int main() {
   printf(ANSI_COLOR_YELLOW "> 3.1. Add arrays -> c fork. (%d elements, %d processes)\n\n", ARRAY_SIZE, PROCESSES_COUNT);
 
@@ -81,10 +81,7 @@ int main() {
 
   runTimer("multi_process", ANSI_COLOR_GREEN, multiProcessAddArrays, &arrays);
 
-  printf(ANSI_COLOR_RED "> Result: ");
-  for (int i = 0; i < 10; i++)
-    printf("%.1f | ", arrays.arrOut[i]);
-  printf("...\n\n");
+  printResultArray(arrays.arrOut, 10);
 
   unmapSharedArray(arrays.arr1, ARRAY_SIZE);
   unmapSharedArray(arrays.arr2, ARRAY_SIZE);

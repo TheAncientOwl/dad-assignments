@@ -8,7 +8,6 @@
 #include <pthread.h>
 
 #include "arrays.h"
-
 #include "../utils/utils.h"
 
 const int ARRAY_SIZE = 10000000;
@@ -21,24 +20,25 @@ struct Arrays {
   float* arrOut;
 };
 
-struct AddArraysThreadArgs {
+struct AddArraysArgs {
   struct Arrays* arrays;
   int startIdx;
   int stopIdx;
 };
 
+// ----------------------------------------------------------------------------
 void* addArrays(void* arguments) {
-  struct AddArraysThreadArgs* args = arguments;
+  struct AddArraysArgs* args = arguments;
   struct Arrays* arrays = args->arrays;
 
   for (int i = args->startIdx; i < args->stopIdx; i++)
     arrays->arrOut[i] = arrays->arr1[i] + arrays->arr2[i];
 }
-
+// ----------------------------------------------------------------------------
 void singleThreadAddArrays(void* arguments) {
   struct Arrays* arrays = arguments;
 
-  struct AddArraysThreadArgs args;
+  struct AddArraysArgs args;
   args.arrays = arrays;
   args.startIdx = 0;
   args.stopIdx = ARRAY_SIZE - 1;
@@ -46,14 +46,15 @@ void singleThreadAddArrays(void* arguments) {
   addArrays(&args);
 }
 
+// ----------------------------------------------------------------------------
 void multiThreadAddArrays(void* arguments) {
   struct Arrays* arrays = arguments;
 
   pthread_t threads[THREADS_COUNT];
-  struct AddArraysThreadArgs allArgs[THREADS_COUNT];
+  struct AddArraysArgs allArgs[THREADS_COUNT];
 
   for (int it = 0; it < THREADS_COUNT; it++) {
-    struct AddArraysThreadArgs* args = &allArgs[it];
+    struct AddArraysArgs* args = &allArgs[it];
     args->arrays = arrays;
     args->startIdx = it * CHUNK_SIZE;
     args->stopIdx = (it + 1) * CHUNK_SIZE - 1;
@@ -65,6 +66,7 @@ void multiThreadAddArrays(void* arguments) {
     pthread_join(threads[it], NULL);
 }
 
+// ----------------------------------------------------------------------------
 int main() {
   printf(ANSI_COLOR_YELLOW "> 3.2. Add arrays -> c pthread. (%d elements, %d threads)\n\n", ARRAY_SIZE, THREADS_COUNT);
 
@@ -79,14 +81,11 @@ int main() {
 
   runTimer("multi_thread", ANSI_COLOR_GREEN, multiThreadAddArrays, &arrays);
 
-  printf(ANSI_COLOR_RED "> Result: ");
-  for (int i = 0; i < 10; i++)
-    printf("%.1f | ", arrays.arrOut[i]);
-  printf("...\n\n");
+  printResultArray(arrays.arrOut, 10);
 
-  deleteArray(arrays.arr1);
-  deleteArray(arrays.arr2);
-  deleteArray(arrays.arrOut);
+  free(arrays.arr1);
+  free(arrays.arr2);
+  free(arrays.arrOut);
 
   return EXIT_SUCCESS;
 }

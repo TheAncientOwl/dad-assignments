@@ -5,7 +5,7 @@
 
 #include "../sockets/ClientSocket.hpp"
 
-#include "../../../utils/ANSIColors.h"
+#include "../../../utils/utils.h"
 
 namespace udp::addarrays {
   using array = std::vector<float>;
@@ -13,14 +13,6 @@ namespace udp::addarrays {
   void clientLog(const std::string& message) {
     static const std::string TAG = ANSI_COLOR_RESET "["  ANSI_COLOR_BLUE "Client" ANSI_COLOR_RESET "] "  ANSI_COLOR_BLUE;
     std::cout << TAG + message + ANSI_COLOR_RESET << std::endl;
-  }
-
-  void clientLogArraySum(const array& arr) {
-    clientLog("Received arrays sum:");
-
-    for (std::size_t it = 0; it < 10; it++)
-      std::cout << arr[it] << " | ";
-    std::cout << "..." << std::endl;
   }
 
   void runClient(const int ARRAY_SIZE, const uint16_t PORT) {
@@ -46,7 +38,8 @@ namespace udp::addarrays {
 
       clientLog("Receiving arrays sum.");
       clientSocket.receive(arr3.data(), ARRAY_SIZE * sizeof(float));
-      clientLogArraySum(arr3);
+
+      printResultArray(arr3.data(), 10);
 
     } catch (const char* error) {
       std::cout << error << '\n';

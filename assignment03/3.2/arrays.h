@@ -14,7 +14,3 @@ float* newArray(int elementsCount, float value) {
 
   return arr;
 }
-
-void deleteArray(float* arr) {
-  free(arr);
-}
