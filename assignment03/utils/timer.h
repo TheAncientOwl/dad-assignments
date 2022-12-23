@@ -10,15 +10,15 @@ long long currentTimeMillis() {
   return  t.tv_sec * 1000LL + t.tv_usec / 1000;
 }
 
-typedef void(*Runnable)(void* args);
+typedef void(*Callable)(void* args);
 
-void runTimer(const char* tag, const char* ansiColor, Runnable runnable, void* args) {
+void runTimer(const char* tag, const char* ansiColor, Callable callable, void* args) {
   if (ansiColor != NULL) printf("%s", ansiColor);
   if (tag != NULL) printf("<%s>\n", tag);
 
   long long startTime = currentTimeMillis();
 
-  runnable(args);
+  callable(args);
 
   if (ansiColor != NULL) printf("%s", ansiColor);
   printf("* Elapsed time: %lldms\n", currentTimeMillis() - startTime);
