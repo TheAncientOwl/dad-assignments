@@ -1,0 +1,17 @@
+{
+  "files.associations": {
+    "*.rmd": "markdown",
+    "array": "c",
+    "*.tcc": "c",
+    "functional": "c",
+    "random": "c",
+    "istream": "c",
+    "new": "c",
+    "ostream": "c",
+    "streambuf": "c",
+    "type_traits": "c",
+    "utility": "c",
+    "string_view": "c",
+    "initializer_list": "c"
+  }
+}
