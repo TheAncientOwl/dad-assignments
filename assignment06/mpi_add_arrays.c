@@ -33,7 +33,8 @@ void main(int argc, char** argv) {
   struct World world;
 
   int scatteredArraySize;
-  struct Array arr1, arr2, arrSum, subArr1, subArr2, subArrSum;
+  struct Array arr1, arr2, arrSum;
+  struct Array subArr1, subArr2, subArrSum;
   arr1.data = arr2.data = subArr1.data = subArr2.data = NULL;
   arr1.size = arr2.size = subArr1.size = subArr2.size = 0;
 
@@ -53,26 +54,22 @@ void main(int argc, char** argv) {
     return;
   }
 
-  // Read arrays & send size to the nodes.
+  // Read arrays.
   if (world.rank == ROOT_NODE) {
+    printf("> Rank [%d]: generating arrays...\n", world.rank);
     arr1 = generateArray(2, ARRAY_SIZE);
     arr2 = generateArray(3, ARRAY_SIZE);
-    arrSum = makeArray(arr1.size);
+    printf("> Rank [%d]: generated arrays.\n", world.rank);
 
     scatteredArraySize = arr1.size / REQUIRED_WORLD_SIZE;
-
-    for (int i = 0; i < world.size; i++)
-      MPI_Send(&scatteredArraySize, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-
-    printf("> Rank [%d]: sent array size (%d).\n", world.rank, scatteredArraySize);
   }
 
-  // Receive array size & allocate memory.
-  MPI_Recv(&scatteredArraySize, 1, MPI_INT, ROOT_NODE, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-  printf("> Rank [%d]: received array size (%d).\n", world.rank, scatteredArraySize);
-
+  // Broadcast scattered array size & allocate memory.
+  MPI_Bcast(&scatteredArraySize, 1, MPI_INT, ROOT_NODE, MPI_COMM_WORLD);
   subArr1 = makeArray(scatteredArraySize);
   subArr2 = makeArray(scatteredArraySize);
+
+  printf("> Rank [%d]: received array size (%d).\n", world.rank, scatteredArraySize);
 
   // Scatter the arrays.
   MPI_Scatter(arr1.data, subArr1.size, MPI_INT, subArr1.data, subArr1.size, MPI_INT, ROOT_NODE, MPI_COMM_WORLD);
@@ -86,23 +83,29 @@ void main(int argc, char** argv) {
   for (int i = 0; i < subArrSum.size; i++)
     subArrSum.data[i] = subArr1.data[i] + subArr2.data[i];
 
-  // Gather the sum.
+  // Allocate sum array & gather the sum.
+  if (world.rank == ROOT_NODE)
+    arrSum = makeArray(arr1.size);
   MPI_Gather(subArrSum.data, subArrSum.size, MPI_INT, arrSum.data, subArrSum.size, MPI_INT, ROOT_NODE, MPI_COMM_WORLD);
 
   // Display the sum
   if (world.rank == ROOT_NODE) {
-    char buffer[100];
     for (int i = 0; i < arrSum.size; i++) {
       if (i % 50 == 0) {
-        printf("> Display next 50 items: [%d-%d)/%d? (y/n): ", i + 1, i + 50 + 1, arrSum.size);
+        printf("> Display next 50 items?: [%d-%d)/%d\n", i + 1, i + 50 + 1, arrSum.size);
         fflush(stdout);
 
         char answer[10];
-        scanf("%s", answer);
+        do {
+          printf("y/n?: ");
+          fflush(stdout);
+          scanf("%s", answer);
+        } while (!(answer[0] == 'n' || answer[0] == 'y'));
         if (answer[0] == 'n')
           break;
       }
 
+      char buffer[100];
       sprintf(buffer, "%2d + %2d = %2d", arr1.data[i], arr2.data[i], arrSum.data[i]);
       printf("%16s |", buffer);
       if ((i + 1) % 5 == 0)
@@ -140,12 +143,10 @@ void freeArray(struct Array arr) {
 }
 
 struct Array generateArray(int delay, int size) {
-  printf("> Generating array...\n");
   struct Array arr = makeArray(size);
 
   for (int i = 0; i < arr.size; i++)
     arr.data[i] = delay;
 
-  printf("> Generated array!\n");
   return arr;
 }
