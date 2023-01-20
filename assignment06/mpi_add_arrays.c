@@ -57,8 +57,8 @@ void main(int argc, char** argv) {
   // Read arrays.
   if (world.rank == ROOT_NODE) {
     printf("> Rank [%d]: generating arrays...\n", world.rank);
-    arr1 = generateArray(2, ARRAY_SIZE);
-    arr2 = generateArray(3, ARRAY_SIZE);
+    arr1 = generateArray(0, ARRAY_SIZE);
+    arr2 = generateArray(5, ARRAY_SIZE);
     printf("> Rank [%d]: generated arrays.\n", world.rank);
 
     scatteredArraySize = arr1.size / REQUIRED_WORLD_SIZE;
@@ -146,7 +146,7 @@ struct Array generateArray(int delay, int size) {
   struct Array arr = makeArray(size);
 
   for (int i = 0; i < arr.size; i++)
-    arr.data[i] = delay;
+    arr.data[i] = i + delay;
 
   return arr;
 }
