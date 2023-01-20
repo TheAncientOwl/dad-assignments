@@ -1,6 +1,6 @@
-OS: Ubuntu 22.04.1 LTS on Windows 10 x86_64
+# OS: Ubuntu 22.04.1 LTS on Windows 10 x86_64
 
-How to run: (from assignment03 working dir)
+# How to run: (from assignment03 working dir)
   add-arrays-c-cpp:
     3.1: ./run.3.1.sh
     3.2: ./run.3.2.sh
