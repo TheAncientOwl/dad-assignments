@@ -13,8 +13,7 @@ public class HTTPMultiServer {
 			// http:/127.0.0.1:10001/indextest.html
 			int port = Integer.parseInt(args[0]);
 			serverSocket = new ServerSocket(port);
-			System.out.println("Server DICE listens in port: "
-					+ port);
+			System.out.println("Server DICE listens in port: " + port);
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
 		}
