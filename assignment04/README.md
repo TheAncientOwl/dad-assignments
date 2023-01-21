@@ -1,3 +1,5 @@
+# OS: Ubuntu 22.04.1 LTS on Windows 10 x86_64
+
 # Task:
   > Download laboratory/seminary with TCP HTTP Server server 
   proof of concept, in Linux Ubuntu (download the virtual machine from the current page - http://acs.ase.ro/dad), 
@@ -13,3 +15,5 @@
 
 # How to run:
   ./compile-and-run.sh
+
+# in browser enter link: http://localhost:25565/ReflectionClass.class
