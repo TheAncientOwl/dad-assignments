@@ -14,6 +14,6 @@
   from class 'eu.ase.httpserver.HTTPSeminarProtocol' in order to handle through Java reflection the requiered task."
 
 # How to run:
-  ./compile-and-run.sh
+  ./run.sh
 
 # in browser enter link: http://localhost:25565/ReflectionClass.class
