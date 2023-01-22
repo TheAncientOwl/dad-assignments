@@ -46,15 +46,12 @@ void main(int argc, char** argv) {
   if (world.size != REQUIRED_WORLD_SIZE) {
     printf("> World must be %d!\n", REQUIRED_WORLD_SIZE);
 
-    free(arr1.data);
-    free(arr2.data);
-
     MPI_Finalize();
 
     return;
   }
 
-  // Read arrays.
+  // Generate arrays.
   if (world.rank == ROOT_NODE) {
     printf("> Rank [%d]: generating arrays...\n", world.rank);
     arr1 = generateArray(0, ARRAY_SIZE);
