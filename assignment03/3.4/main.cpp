@@ -14,7 +14,7 @@
 #include "../utils/ANSIColors.h"
 
 const int ARRAY_SIZE = 1000;
-const uint16_t PORT = 8080;
+const uint16_t PORT = 8090;
 
 int main() {
   printf(ANSI_COLOR_YELLOW "> 3.4. Add arrays -> udp socket programming. (%d elements)\n" ANSI_COLOR_RESET, ARRAY_SIZE);

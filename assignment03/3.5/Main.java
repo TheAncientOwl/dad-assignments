@@ -33,7 +33,7 @@ import server.arrays.MultiThreadArraySum;
 public class Main {
   public static final String YELLOW = "\u001B[33m";
 
-  private static final int[] PORTS = { 8080, 8081, 8082, 8083, 8084 };
+  private static final int[] PORTS = { 8090, 8091, 8092, 8093, 8094 };
   private static final int NETWORK_SERVER_ARRAY_SIZE = 1000;
 
   public static void main(String[] args) {
