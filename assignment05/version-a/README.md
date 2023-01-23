@@ -42,3 +42,5 @@
   sudo ./startup.sh
 
   # access localhost:8080/sum-vectors/sumVectorsForm.html
+  # input path to input(arr1.txt, arr2.txt) and output(arr3.txt)
+  
