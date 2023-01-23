@@ -24,7 +24,7 @@
   export CLASSPATH=.:$CATALINA_HOME/lib/jsp-api.jar
   cd server
   javac rmiweb/*.java
-  rmiregistry & java -classpath $CLASSPATH -Djava.security.policy=./policy.all -Xmx1000000000 -Djava.rmi.server.hostname=10.2.65.95 rmiweb.Main
+  rmiregistry & java -classpath $CLASSPATH -Djava.security.policy=./policy.all -Xmx1000000000 -Djava.rmi.server.hostname=172.31.45.37 rmiweb.SumVectorsProgMain
 
   # client part - in another terminal window:
   export JAVA_HOME=/opt/software/jdk-17.0.2
@@ -33,11 +33,12 @@
   export CLASSPATH=.:$CATALINA_HOME/lib/jsp-api.jar
   cd client
   javac rmiweb/*.java
+  # sudo rm -rf $CATALINA_HOME/webapps/sum-vectors
   sudo mkdir -p $CATALINA_HOME/webapps/sum-vectors/WEB-INF/classes/rmiweb
-  sudo cp ./formSumVectors.html $CATALINA_HOME/webapps/sum-vectors
-  sudo cp ./formSumVectorsBean.jsp $CATALINA_HOME/webapps/sum-vectors
+  sudo cp ./sumVectorsForm.html $CATALINA_HOME/webapps/sum-vectors
+  sudo cp ./sumVectorsFormBean.jsp $CATALINA_HOME/webapps/sum-vectors
   sudo cp -R rmiweb/* $CATALINA_HOME/webapps/sum-vectors/WEB-INF/classes/rmiweb
   cd $CATALINA_HOME/bin
   sudo ./startup.sh
 
-  # access localhost:8080/sum-vectors/formSumVectors.html
+  # access localhost:8080/sum-vectors/sumVectorsForm.html
