@@ -24,7 +24,7 @@
   export CLASSPATH=.:$CATALINA_HOME/lib/jsp-api.jar
   cd server
   javac rmiweb/*.java
-  rmiregistry & java -classpath $CLASSPATH -Djava.security.policy=./policy.all -Xmx1000000000 -Djava.rmi.server.hostname=172.31.45.37 rmiweb.SumVectorsProgMain
+  rmiregistry & java -classpath $CLASSPATH -Djava.security.policy=./policy.all -Xmx1000000000 -Djava.rmi.server.hostname=127.0.0.1 rmiweb.SumVectorsProgMain
 
   # client part - in another terminal window:
   export JAVA_HOME=/opt/software/jdk-17.0.2
@@ -43,4 +43,3 @@
 
   # access localhost:8080/sum-vectors/sumVectorsForm.html
   # input path to input(arr1.txt, arr2.txt) and output(arr3.txt)
-  
