@@ -16,11 +16,5 @@
     Version b) - The RMI Server is developed in order to receive the bytecode of business logic 
     (adding two vectors) in the same way as in ComputePi solution - ./downloads_readme/rmidocs/rmiDocsExec
 
-# How to run:
-  version a: 
-    cd version-a
-    check version-a/README.md
+# How to run: (version-b)
   
-  version b:
-    cd version-b
-    check version-b/README.md
