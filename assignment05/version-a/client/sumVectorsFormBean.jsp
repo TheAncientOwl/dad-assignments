@@ -4,7 +4,6 @@
 
 <BODY>
 <jsp:useBean id="sv1" class="rmiweb.SumVectorsProcessorBean" />
-<%-- <%! private String[] rmis = new String[]{"172.31.45.37", "172.31.45.38", "172.31.45.39"}; %> --%>
 <%! private String[] rmis = new String[]{"127.0.0.1", "127.0.0.1", "127.0.0.1"}; %>
 <%
  
