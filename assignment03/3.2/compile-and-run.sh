@@ -1,2 +1,2 @@
-gcc -lpthread -o main.o main.c
+gcc -pthread -o main.o main.c
 ./main.o
